@@ -70,9 +70,6 @@ class Chat:
                     'Tente: "*/music* _Nome da musica_"\n'
                     'ou: "*/music* _Artista - Nome da musica_"',
 
-            'invalid_command':'‼️ *Ops! Comandos inválido!*\n'
-                    'Tente: "*/music* _Nome da musica_"\n'
-                    'ou: "*/music* _Artista - Nome da musica_"',
 
             'too_long':'‼️ *Ops! o video e muito longo para converter!*\n'
                     'O limite é de 30minutos.'
@@ -138,7 +135,7 @@ class Chat:
 
         else:
             #Invalid command
-            self.send_message(self.messages['invalid_command'])
+            print("\nError")
 
         pass 
 
