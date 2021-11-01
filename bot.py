@@ -60,19 +60,17 @@ class Chat:
         self.message_id = msg['message_id']
 
         self.messages = {
-            'start':'🤖 Hello, '+ self.user_name +'!\n\n'
-                    '📩 Send me:\n\n'
-                    '"*/music* _song name_"  or\n'
-                    '"*/music* _musician name - song name_"\n\n'
-                    'to order some music. 🎶',
+            'start':'🤖 Oi, '+ self.user_name +'!\n\n'
+                    '📩 Use os Seguintes comandos:\n\n'
+                    '"*/music* _Nome da musica_"  ou\n'
+                    '"*/music* _Artista - Nome da musica_"\n\n'
+                    'Use esses comandos para pedir uma musica. 🎶',
             
-            'spotify_input_error':"‼️ *Oops! The bot doesn't support Spotify links!*\n"
+            'spotify_input_error':"‼️ *Ops! O bot não suporta link Spotify!*\n"
                     'Try: "*/music* _song name_"\n'
                     'or: "*/music* _musician name - song name_"',
-
-            'invalid_command':'‼️ *Oops! Invalid command!*\n'
-                    'Try: "*/music* _song name_"\n'
-                    'or: "*/music* _musician name - song name_"',
+            
+            
 
             'too_long':'‼️ *Oops! Video too long to convert!*\n'
                     'Order something 30 minutes or less.'
@@ -109,14 +107,14 @@ class Chat:
             file_name = file_name.replace('"', '')
 
             self.send_message(f"🎵 {Music.get_title(self, result)}\n🔗 {Music.get_link(self, result)}")
-            downloading_message = self.send_message('⬇️ Downloading... \n_(this may take a while.)_')
+            downloading_message = self.send_message('⬇️ Fazendo download, aguarde... \n_(this may take a while.)_')
 
             Music.download_music(self, file_name, Music.get_link(self, result))
 
             try:
                 self.send_audio(file_name)
                 self.delete_message(downloading_message)
-                self.send_message('✅ Sucess!')
+                self.send_message('✅ Download Concluido!')
                 print ("\nSucess!\n")
             except:
                 print("\nError")
