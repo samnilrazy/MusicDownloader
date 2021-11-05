@@ -55,7 +55,7 @@ class Chat:
     def __init__(self, msg):
         self.chat_id = msg['chat']['id']
         self.user_input = msg['text']
-        self.user_input = self.user_input.replace('@TLMusicDownloader_bot', '')
+        self.user_input = self.user_input.replace('By: @MusicDownloaderBR_bot', '')
         self.user_name = msg['from']['first_name']
         self.message_id = msg['message_id']
 
@@ -102,7 +102,7 @@ class Chat:
         min_duration, split_count = Music.get_duration(self, result)
 
         if int(min_duration) < 30 and split_count < 3:
-            file_name = Music.get_title(self, result) +' - @TLMusicDownloader_bot '+str(randint(0,999999))+'.mp3'
+            file_name = Music.get_title(self, result) +' - By: @MusicDownloaderBR_bot '+str(randint(0,999999))+'.mp3'
             file_name = file_name.replace('"', '')
 
             self.send_message(f"🎵 {Music.get_title(self, result)}\n🔗 {Music.get_link(self, result)}")
