@@ -62,8 +62,9 @@ class Chat:
         self.messages = {
             'start':'😁 Oi, '+ self.user_name +', Tudo Bem?\n\n'
                     '📩 Para pedir uma musica, use os seguintes comandos:\n\n'
-                    '"*/music* _Nome da musica_"  ou\n'
-                    '"*/music* _Artista - Nome da musica_"\n\n'
+                    '"*/music* _Nome da musica_"  \n'
+                    '"*/music* _Artista - Nome da musica_"  ou\n'
+                    '"*/music _link da musica_"  \n\n'
                     'Eu fasso o download para você!. 🎶',
             
             'spotify_input_error':"‼️ *Ops! o bot não suporta links do spotify!*\n"
@@ -116,7 +117,7 @@ class Chat:
                 self.send_message('✅ Download Concluído!')
                 print ("\nSucess!\n")
             except:
-                print("\nError")
+                self.send_message('❌Falha no download!!❌\n➡Reporte para @SamNilrazy')
 
             os.remove(file_name)
         pass
@@ -135,7 +136,7 @@ class Chat:
 
         else:
             #Invalid command
-            print("\nError")
+            print("self.user_name --> utilizou um comando inválido")
 
         pass 
 
