@@ -1,9 +1,10 @@
 import os
+import json
 import youtube_dl
 import telepotpro
 from random import randint
 from multiprocessing import Process
-from youtubesearchpython import VideosSearch
+from youtubesearchpython import SearchVideos
 from dotenv import load_dotenv
 from os.path import join, dirname
 
@@ -19,20 +20,30 @@ class Music:
         self.user_input = user_input[6:]
 
     def search_music(self, user_input):
-        return VideosSearch(user_input, limit = 1).result()
+        search = SearchVideos(user_input, offset = 1, mode = "json", max_results = 1)
+        
+        return json.loads(search.result())
+
+        pass
 
     def get_link(self, result):
-        return result['result'][0]['link']
+        return result['search_result'][0]['link']
+
+        pass
 
     def get_title(self, result):
-        return result['result'][0]['title']
+        return result['search_result'][0]['title']
+
+        pass
 
     def get_duration(self, result):
-        result = result['result'][0]['duration'].split(':')
+        result = result['search_result'][0]['duration'].split(':')
         min_duration = int(result[0])
         split_count = len(result)
         
         return min_duration, split_count
+
+        pass
 
     def download_music(self, file_name, link):
         ydl_opts = {
@@ -55,25 +66,27 @@ class Chat:
     def __init__(self, msg):
         self.chat_id = msg['chat']['id']
         self.user_input = msg['text']
-        self.user_input = self.user_input.replace('By: @MusicDownloaderBR_bot', '')
+        self.user_input = self.user_input.replace('@MusicDownloaderBR_bot', '')
         self.user_name = msg['from']['first_name']
         self.message_id = msg['message_id']
 
         self.messages = {
-            'start':'😁 Oi, ' + self.user_name + 'Tudo Bem?\n\n'
+            'start':'😁 Oi, '+ self.user_name +'! Tudo Bem?\n\n'
                     '📩 Para pedir uma musica, use os seguintes comandos:\n\n'
-                    '"*/music* _Nome da musica_"  \n'
-                    '"*/music* _Artista - Nome da musica_"  ou\n'
-                    '"*/music _link da musica_"  \n\n'
+                    '"/music Nome da musica"  \n"/music Link" Ou \n'
+                    '"/music Artista - Nome da musica"\n\n'
                     'Eu fasso o download para você!. 🎶',
             
             'spotify_input_error':"‼️ *Ops! o bot não suporta links do spotify!*\n"
                     'Tente: "*/music* _Nome da musica_"\n'
                     'ou: "*/music* _Artista - Nome da musica_"',
 
+            'invalid_command':'‼️ *Ops! Comando inválido!*\n'
+                    'Tente: "*/music* _Nome da musica_"\n'
+                    'ou: "*/music* _Artista - Nome da musica_"',
 
             'too_long':'‼️ *Ops! o video e muito longo para converter!*\n'
-                    'O limite é de 30minutos.'
+                    'O limite é de 30 minutos'
 
 
         }
@@ -84,6 +97,8 @@ class Chat:
 
     def send_message(self, content):
         return bot.sendMessage(self.chat_id, content, reply_to_message_id=self.message_id, parse_mode='Markdown')
+
+        pass
 
     def delete_message(self, message):
         chat_id = message['chat']['id']
@@ -99,15 +114,14 @@ class Chat:
 
     def process_request(self, user_input):
         result = Music.search_music(self, user_input[6:])
-
         min_duration, split_count = Music.get_duration(self, result)
 
         if int(min_duration) < 30 and split_count < 3:
-            file_name = Music.get_title(self, result) +' - By: @MusicDownloaderBR_bot '+str(randint(0,999999))+'.mp3'
+            file_name = Music.get_title(self, result) +' - @MusicDownloaderBR_bot '+str(randint(0,999999))+'.mp3'
             file_name = file_name.replace('"', '')
 
-            self.send_message(f"🎵 {Music.get_title(self, result)}\n🔗 {Music.get_link(self, result)}")
-            downloading_message = self.send_message('⬇️ Fazendo download, aguarde...')
+            self.send_message(['🎵 '+ Music.get_title(self, result) +'\n'+'🔗 '+Music.get_link(self, result)])
+            downloading_message = self.send_message('⬇️ Baixando...')
 
             Music.download_music(self, file_name, Music.get_link(self, result))
 
@@ -115,9 +129,9 @@ class Chat:
                 self.send_audio(file_name)
                 self.delete_message(downloading_message)
                 self.send_message('✅ Download Concluído!')
-                print ("\nSucess!\n")
+                print ("\nDownload Concluido!\n")
             except:
-                self.send_message('❌Falha no download!!❌\n➡Reporte para @SamNilrazy')
+                print("\nError")
 
             os.remove(file_name)
         pass
@@ -131,12 +145,11 @@ class Chat:
             	self.send_message(self.messages['spotify_input_error'])
 
             else:
-                #Valid command
                 self.process_request(user_input)
 
         else:
             #Invalid command
-            print("Este usou comando invalido --->" +self.user_name)
+            print('Comando invalido')
 
         pass 
 
