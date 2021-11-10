@@ -60,7 +60,7 @@ class Chat:
         self.message_id = msg['message_id']
 
         self.messages = {
-            'start':'😁 Oi, '+ self.user_name +', Tudo Bem?\n\n'
+            'start':'😁 Oi, ' + self.user_name + 'Tudo Bem?\n\n'
                     '📩 Para pedir uma musica, use os seguintes comandos:\n\n'
                     '"*/music* _Nome da musica_"  \n'
                     '"*/music* _Artista - Nome da musica_"  ou\n'
@@ -136,7 +136,7 @@ class Chat:
 
         else:
             #Invalid command
-            print("self.user_name --> utilizou um comando inválido")
+            print("Este usou comando invalido --->" +self.user_name)
 
         pass 
 
